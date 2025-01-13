@@ -1,12 +1,34 @@
 pipeline {
     agent any
     stages {
+        stage('Setup') {
+            steps {
+                echo 'Setting up environment'
+                // Ensure the system Node.js version is used if Node.js is required
+                sh 'node -v || echo "Node.js is not installed"'
+                sh './gradlew clean'
+            }
+        }
         stage('Build') {
             steps {
                 echo 'Running build automation'
+                // Build the project
                 sh './gradlew build --no-daemon'
+            }
+        }
+        stage('Archive') {
+            steps {
+                echo 'Archiving build artifacts'
                 archiveArtifacts artifacts: 'dist/trainSchedule.zip'
             }
+        }
+    }
+    post {
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed. Please check the logs.'
         }
     }
 }
