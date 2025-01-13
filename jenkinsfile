@@ -3,8 +3,7 @@ pipeline {
     stages {
         stage('Setup') {
             steps {
-                echo 'Setting up environment'
-                // Ensure the system Node.js version is used if Node.js is required
+                echo 'Setting up the environment'
                 sh 'node -v || echo "Node.js is not installed"'
                 sh './gradlew clean'
             }
@@ -12,8 +11,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Running build automation'
-                // Build the project
-                sh './gradlew build --no-daemon'
+                sh './gradlew build --no-daemon --stacktrace --info'
             }
         }
         stage('Archive') {
@@ -28,7 +26,7 @@ pipeline {
             echo 'Build completed successfully!'
         }
         failure {
-            echo 'Build failed. Please check the logs.'
+            echo 'Build failed. Check the logs for details.'
         }
     }
 }
